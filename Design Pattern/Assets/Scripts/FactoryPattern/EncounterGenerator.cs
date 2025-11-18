@@ -7,6 +7,7 @@ public abstract class EncounterGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject canvasCombat;
     [SerializeField] private EnemyScriptable[] enemies;
+    private EnemyScriptable _actualEnemy; 
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -16,6 +17,7 @@ public abstract class EncounterGenerator : MonoBehaviour
     protected virtual void StartFight()
     {
         canvasCombat.SetActive(true);
+        _actualEnemy = PickRandomPokemon();
         EnemySpawn();
     }
     protected virtual void EnemySpawn()
