@@ -14,4 +14,9 @@ public class Npc : MonoBehaviour
     {
         transform.DOMove(movePos, moveDuration);
     }
+    
+    private void OnDestroy()
+    {
+        EventManager.onCatch -= Move;
+    }
 }

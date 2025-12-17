@@ -1,13 +1,15 @@
+using System;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private TMP_Text textPokemon;
-    [SerializeField] private CreatureScriptable[] allCreatures;
+    [SerializeField] private CreatureScriptable[] allPossiblesCreatures;
     
-    private CreatureScriptableInstance fightCreature;
+    [SerializeField] private CreatureScriptableInstance fightCreature;
     
     private int numberOfPokemon;
     private void Awake()
@@ -18,7 +20,7 @@ public class Inventory : MonoBehaviour
     private void AddPokemon()
     {
         numberOfPokemon++;
-        SetFightCreature(allCreatures[Random.Range(0,allCreatures.Length)]);
+        SetFightCreature(allPossiblesCreatures[Random.Range(0,allPossiblesCreatures.Length)]);
         UpdateUi();
     }
 
@@ -39,5 +41,10 @@ public class Inventory : MonoBehaviour
     public void SetFightCreature(CreatureScriptableInstance newCreature)
     {
         fightCreature = newCreature;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.onCatch -= AddPokemon;
     }
 }

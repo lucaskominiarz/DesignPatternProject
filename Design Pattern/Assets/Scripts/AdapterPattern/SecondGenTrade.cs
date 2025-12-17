@@ -13,8 +13,10 @@ public class SecondGenTrade : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        
         Inventory otherInventory = other.GetComponent<Inventory>();
         CreatureScriptableInstance receiveCreature = otherInventory.GetFightCreature();
+        if (receiveCreature == null)  return;
         otherInventory.SetFightCreature(AdapterSend(tradeSecondCreatureInstance));
         tradeSecondCreatureInstance = AdapterReceive(receiveCreature);
     }

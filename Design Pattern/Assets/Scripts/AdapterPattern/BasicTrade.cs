@@ -15,6 +15,7 @@ public class BasicTrade : MonoBehaviour
     {
         Inventory otherInventory = other.GetComponent<Inventory>();
         CreatureScriptableInstance receiveCreature = otherInventory.GetFightCreature();
+        if (receiveCreature == null)  return;
         otherInventory.SetFightCreature(tradeCreatureInstance);
         tradeCreatureInstance = receiveCreature;
     }
