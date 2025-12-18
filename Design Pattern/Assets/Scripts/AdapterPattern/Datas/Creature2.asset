@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Creature2
   m_EditorClassIdentifier: Assembly-CSharp::CreatureScriptable
   name: C
-  health: 8
-  attack: 9
+  health: 55
+  attack: 13
   defense: 10
   speed: 8
   special: 2
+  sprite: {fileID: -552770469427464105, guid: 2cf71c22125b25742977ab97ceebb949, type: 3}

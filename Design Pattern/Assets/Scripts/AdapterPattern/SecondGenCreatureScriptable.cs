@@ -14,7 +14,9 @@ public class SecondGenCreatureScriptableInstance
     public int defense;
     public int speed;
     public int special;
+    public Sprite sprite;
     public int fireResistance;
+    
 
     public SecondGenCreatureScriptableInstance(SecondGenCreatureScriptable creature)
     {
@@ -25,5 +27,6 @@ public class SecondGenCreatureScriptableInstance
         speed = creature.speed;
         special = creature.special;
         fireResistance = creature.fireResistance;
+        sprite = creature.sprite;
     }
 }

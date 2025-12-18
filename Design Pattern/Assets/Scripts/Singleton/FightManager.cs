@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
@@ -10,13 +12,21 @@ public class FightManager : MonoBehaviour
     public static FightManager INSTANCE;
 
     [SerializeField] private float enemyTurnTime = 1f;
-    [SerializeField] private GameObject combatCanvas;
+    [SerializeField] private Image imageEnemy;
+    [SerializeField] private Image imagePlayer;
+    [SerializeField] private PlayerController playerControllerReference;
+    [SerializeField] private int healValue = 4;
+
+    [SerializeField] private Slider playerLifeSlider;
+    [SerializeField] private Slider enemyLifeSlider;
+
+    [SerializeField] private GameObject[] endFightUnactiveGo;
+    
     private CreatureScriptableInstance _enemy;
     private CreatureScriptableInstance _player;
     private int _currentPlayerHp;
     private int _currentEnemyHp;
     private bool _isPlayerTurn = true;
-    private Coroutine _enemyInTurn;
 
     private void Start()
     {
@@ -31,27 +41,43 @@ public class FightManager : MonoBehaviour
         }
     }
 
-    void StartFight(CreatureScriptableInstance enemy, CreatureScriptableInstance player)
+    private void Awake()
+    {
+        EventManager.onCatch += EndFight;
+    }
+
+    public void StartFight(CreatureScriptableInstance enemy, CreatureScriptableInstance player)
     {
         _enemy = enemy;
         _player = player;
         _currentEnemyHp = enemy.health;
         _currentPlayerHp = player.health;
+        imageEnemy.sprite = enemy.sprite;
+        imagePlayer.sprite = player.sprite;
+        playerControllerReference.canMove = false;
+        playerLifeSlider.maxValue = _player.health;
+        enemyLifeSlider.maxValue = _enemy.health;
+        UpdateUi();
     }
 
     void EndTurn()
     {
+        UpdateUi();
         _isPlayerTurn = !_isPlayerTurn;
         if (!_isPlayerTurn)
         {
-            Attack();
+            StartCoroutine(EnemyTurnCoroutine());
         }
     }
 
     void EndFight()
     {
-        combatCanvas.SetActive(false);
-        // rajouter les trucs en mode autoriser player a bouger et destoy enemy jsp 
+        playerControllerReference.canMove = true;
+        foreach (var elem in endFightUnactiveGo)
+        {
+            elem.SetActive(false);
+        }
+        StopAllCoroutines();
     }
 
     bool CheckPlayerDeath() => _currentPlayerHp <= 0;
@@ -62,32 +88,50 @@ public class FightManager : MonoBehaviour
     {
         if (_isPlayerTurn)
         {
-            _currentEnemyHp -= (int)(_player.attack * Random.Range(0f,_enemy.defense / 10f) + _player.special * Random.Range(0f,_enemy.defense / 10f));
+            _currentEnemyHp -= _player.attack - _enemy.defense / 2;
             if (CheckEnemyDeath())
             {
                 EndFight();
             }
             EndTurn();
         }
-        else if (_enemyInTurn == null)
+    }
+
+    public void Heal()
+    {
+        if (_isPlayerTurn)
         {
-            _enemyInTurn = StartCoroutine(EnemyTurnCoroutine());
+            _currentPlayerHp += healValue;
+            UpdateUi();
+            EndTurn();
         }
+    }
+
+    public void Run()
+    {
+        EndFight();
     }
 
     private IEnumerator EnemyTurnCoroutine()
     {
         yield return new WaitForSeconds(enemyTurnTime);
-        _currentPlayerHp -= (int)(_enemy.attack * Random.Range(0f,_player.defense / 10f) + _enemy.special * Random.Range(0,_player.defense / 10f));
+        _currentPlayerHp -= _enemy.attack- _player.defense / 2;
         if (CheckPlayerDeath())
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Debug.Log("Loose");
+            EndFight();
         }
         EndTurn();
     }
 
     void UpdateUi()
     {
-        
+        playerLifeSlider.value = _currentPlayerHp;
+        enemyLifeSlider.value = _currentEnemyHp;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.onCatch -= EndFight;
     }
 }

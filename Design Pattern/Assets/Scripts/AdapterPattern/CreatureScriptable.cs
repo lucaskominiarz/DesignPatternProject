@@ -9,6 +9,7 @@ public class CreatureScriptable : ScriptableObject
     public int defense;
     public int speed;
     public int special;
+    public Sprite sprite;
 }
 
 public class CreatureScriptableInstance
@@ -19,6 +20,7 @@ public class CreatureScriptableInstance
     public int defense;
     public int speed;
     public int special;
+    public Sprite sprite;
 
     public CreatureScriptableInstance(CreatureScriptable creature)
     {
@@ -28,5 +30,6 @@ public class CreatureScriptableInstance
         defense = creature.defense;
         speed = creature.speed;
         special = creature.special;
+        sprite = creature.sprite;
     }
 }

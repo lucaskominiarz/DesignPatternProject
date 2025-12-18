@@ -15,13 +15,12 @@ public class PlayerController : MonoBehaviour
         {
             canMove = false;
             transform.DOMove(new Vector3(transform.position.x + direction.x * moveDistance,
-                transform.position.y + direction.y * moveDistance, 0), 1f / moveSpeed).onComplete = CanMove;
-            
+                    transform.position.y + direction.y * moveDistance, 0), 1f / moveSpeed).onComplete = () =>
+                {
+                    canMove = true;
+                };
+
         }
     }
-
-    void CanMove()
-    {
-        canMove = true;
-    }
+    
 }

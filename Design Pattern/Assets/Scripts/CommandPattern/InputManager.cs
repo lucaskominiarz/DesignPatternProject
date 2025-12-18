@@ -6,7 +6,10 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    
     [SerializeField] private PlayerController playerControllerReference;
+    [SerializeField] private Pool poolReference;
+    
      private CommandInvoker _commandInvokerRef = new CommandInvoker();
     
 
@@ -33,6 +36,14 @@ public class InputManager : MonoBehaviour
         if (playerControllerReference.canMove)
         {
             _commandInvokerRef.Redo();
+        }
+    }
+
+    public void OnClick(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            poolReference.SpawnObject();
         }
     }
 }

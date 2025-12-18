@@ -6,11 +6,13 @@ using Random = UnityEngine.Random;
 public abstract class EncounterGenerator : MonoBehaviour, IEncounter
 {
     [SerializeField] private GameObject canvasCombat;
-    [SerializeField] private EnemyScriptable[] enemies;
-    private EnemyScriptable _actualEnemy; 
+    [SerializeField] private CreatureScriptable[] enemies;
+    private CreatureScriptableInstance _actualEnemy;
+    private CreatureScriptableInstance _playerCreature;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        _playerCreature = other.GetComponent<Inventory>().GetFightCreature();
         StartFight();
     }
 
@@ -24,8 +26,7 @@ public abstract class EncounterGenerator : MonoBehaviour, IEncounter
     {
         if (enemies.Length > 0)
         {
-            Instantiate(enemies[Random.Range(0, enemies.Length)]); // ça marche pas faut que je crée un game object et je lui donne les valeurs apres // prefab enemie genre
-            // faut faire un script ennemi qui prends dcp toutes les variables et qui peut combattre // nan pas d'instantiante enft juste 2 types d'enemies avec des scriptable pris dans le fight
+            FightManager.INSTANCE.StartFight(_actualEnemy,_playerCreature);
         }
         else
         {
@@ -33,9 +34,9 @@ public abstract class EncounterGenerator : MonoBehaviour, IEncounter
         }
     }
 
-    protected virtual EnemyScriptable PickRandomPokemon()
+    protected virtual CreatureScriptableInstance PickRandomPokemon()
     {
-        return enemies[Random.Range(0,enemies.Length)];
+        return new CreatureScriptableInstance(enemies[Random.Range(0,enemies.Length)]);
     }
 
     protected virtual void PauseGameWhenFight()

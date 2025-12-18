@@ -8,13 +8,14 @@ public class Inventory : MonoBehaviour
 {
     [SerializeField] private TMP_Text textPokemon;
     [SerializeField] private CreatureScriptable[] allPossiblesCreatures;
-    
-    [SerializeField] private CreatureScriptableInstance fightCreature;
+    [SerializeField] private CreatureScriptable starterCreature;
+    private CreatureScriptableInstance fightCreature;
     
     private int numberOfPokemon;
     private void Awake()
     {
         EventManager.onCatch += AddPokemon;
+        fightCreature = new CreatureScriptableInstance(starterCreature);
     }
 
     private void AddPokemon()
